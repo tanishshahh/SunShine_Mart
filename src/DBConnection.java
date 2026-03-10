@@ -9,5 +9,6 @@ public class DBConnection {
                 "jdbc:postgresql://localhost:5432/testdb",
                 "postgres",
                 "1612");
+
     }
 }
