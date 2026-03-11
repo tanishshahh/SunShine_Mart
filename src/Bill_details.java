@@ -2,17 +2,25 @@ public class Bill_details {
     int bill_id;
     int cust_id;
     int vendor_id;
-    int bill_date;
+    String bill_date;
     int tax;
     int discount;
     int total_amount;
+    int final_bill;
 
+    public int getFinal_bill() {
+        return final_bill;
+    }
 
-    public int getBill_date() {
+    public void setFinal_bill(int final_bill) {
+        this.final_bill = final_bill;
+    }
+
+    public String getBill_date() {
         return bill_date;
     }
 
-    public void setBill_date(int bill_date) {
+    public void setBill_date(String bill_date) {
         this.bill_date = bill_date;
     }
 
