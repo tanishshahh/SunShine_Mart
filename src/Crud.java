@@ -149,4 +149,78 @@ public class Crud {
         con.close();
     }
 
+//================ Vendor==============
+
+    public void insertVendor(Vendor v) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps =con.prepareStatement("insert into public.Vendor values(?,?,?,?,?)");
+
+        ps.setInt(1, v.getVendor_id());
+        ps.setString(2, v.getVendor_name());
+        ps.setString(3, v.getVendor_number());
+        ps.setString(4,v.getVendor_address());
+        ps.setString(5,v.getVendor_email());
+
+        ps.executeUpdate();
+        System.out.println("Vendor Inserted");
+        con.close();
+    }
+
+    public void updateVendor(Vendor v) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps =con.prepareStatement("update public.Vendor set vendor_name=?,vendor_number=?, vendor_address=?,vendor_email=? where vendor_id=?");
+
+        ps.setString(1, v.getVendor_name());
+        ps.setString(2, v.getVendor_number());
+        ps.setString(3,v.getVendor_address());
+        ps.setString(4, v.getVendor_email());
+        ps.setInt(5, v.getVendor_id());
+
+        ps.executeUpdate();
+        System.out.println("Vendor Updated");
+        con.close();
+    }
+
+    public void deleteVendor(int id) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps =con.prepareStatement("delete from public.Vendor where vendor_id=?");
+        ps.setInt(1, id);
+        ps.executeUpdate();
+
+        System.out.println("Vendor Deleted");
+        con.close();
+    }
+
+    public void viewVendor() throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery("select * from public.Vendor");
+        while (rs.next()) {
+
+            System.out.println("Vendor ID: " + rs.getInt(1));
+            System.out.println("Vendor Name: " + rs.getString(2));
+            System.out.println("Vendor Number: "+rs.getString(3));
+            System.out.println("Vendor Address"+rs.getString(4));
+            System.out.println("Vendor Email " + rs.getString(5));
+            System.out.println("---------------------------");
+        }
+        con.close();
+    }
+
+    public void searchVendor(int id) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps =con.prepareStatement("select * from public.Vendor where vendor_id=?");
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            System.out.println("Vendor ID: " + rs.getInt(1));
+            System.out.println("Vendor Name: " + rs.getString(2));
+            System.out.println("Vendor Number: "+rs.getString(3));
+            System.out.println("Vendor Address"+rs.getString(4));
+            System.out.println("Vendor Email " + rs.getString(5));
+            System.out.println("---------------------------");
+        }
+        con.close();
+    }
+
 }
