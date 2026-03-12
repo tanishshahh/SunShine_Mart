@@ -6,7 +6,7 @@ public class Crud {
     //=================Product==============
     public void insertProduct(Product p) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("insert into public.Product values(?,?,?,?,?,?)");
+        PreparedStatement ps = con.prepareStatement("insert into public.\"Product\" values(?,?,?,?,?,?)");
 
         ps.setInt(1, p.getPro_id());
         ps.setString(2, p.getPro_name());
@@ -22,7 +22,7 @@ public class Crud {
 
     public void updateProduct(Product p) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("update public.Product set pro_name=?,purchse_price=?,sales_price=?,pro_qty=?,vendor_id=? where pro_id=?");
+        PreparedStatement ps = con.prepareStatement("update public.\"Product\" set pro_name=?,purchse_price=?,sales_price=?,pro_qty=?,vendor_id=? where pro_id=?");
 
         ps.setString(1, p.getPro_name());
         ps.setInt(2, p.getPurcahse_price());
@@ -38,7 +38,7 @@ public class Crud {
 
     public void deleteProduct(int id) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("delete from public.Product where pro_id=?");
+        PreparedStatement ps = con.prepareStatement("delete from public.\"Product\" where pro_id=?");
         ps.setInt(1, id);
         ps.executeUpdate();
 
@@ -49,7 +49,7 @@ public class Crud {
     public void viewProducts() throws Exception {
         Connection con = DBConnection.getPostgresConnection();
         Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("select * from public.Product");
+        ResultSet rs = st.executeQuery("select * from public.\"Product\"");
         while (rs.next()) {
 
             System.out.println("Product ID: " + rs.getInt(1));
@@ -66,7 +66,7 @@ public class Crud {
 
     public void searchProduct(int id) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("select * from public.Product where pro_id=?");
+        PreparedStatement ps = con.prepareStatement("select * from public.\"Product\" where pro_id=?");
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
@@ -80,7 +80,7 @@ public class Crud {
     //===============Customer==================
     public void insertCustomer(customer c) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("insert into public.customer values(?,?,?,?,?)");
+        PreparedStatement ps = con.prepareStatement("insert into public.\"Customer\" values(?,?,?,?,?)");
 
         ps.setInt(1, c.getCust_id());
         ps.setString(2, c.getCust_name());
@@ -95,7 +95,7 @@ public class Crud {
 
     public void updateCustomer(customer c) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("update public.customer set cust_name=?,cust_number=?,cust_address=?,cust_email=? where cust_id=?");
+        PreparedStatement ps = con.prepareStatement("update public.\"Customer\" set cust_name=?,cust_number=?,cust_address=?,cust_email=? where cust_id=?");
 
         ps.setString(1, c.getCust_name());
         ps.setString(2, c.getCust_number());
@@ -110,7 +110,7 @@ public class Crud {
 
     public void deleteCustomer(int id) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("delete from public.customer where cust_id=?");
+        PreparedStatement ps = con.prepareStatement("delete from public.\"Customer\" where cust_id=?");
         ps.setInt(1, id);
         ps.executeUpdate();
 
@@ -121,7 +121,7 @@ public class Crud {
     public void viewCustomer() throws Exception {
         Connection con = DBConnection.getPostgresConnection();
         Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("select * from public.customer");
+        ResultSet rs = st.executeQuery("select * from public.\"Customer\"");
         while (rs.next()) {
 
             System.out.println("Customer ID: " + rs.getInt(1));
@@ -136,7 +136,7 @@ public class Crud {
 
     public void searchCustomer(int id) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("select * from public.customer where cust_id=?");
+        PreparedStatement ps = con.prepareStatement("select * from public.\"Customer\" where cust_id=?");
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
@@ -153,7 +153,7 @@ public class Crud {
 
     public void insertVendor(Vendor v) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("insert into public.Vendor values(?,?,?,?,?)");
+        PreparedStatement ps = con.prepareStatement("insert into public.\"Vendor\" values(?,?,?,?,?)");
 
         ps.setInt(1, v.getVendor_id());
         ps.setString(2, v.getVendor_name());
@@ -168,7 +168,7 @@ public class Crud {
 
     public void updateVendor(Vendor v) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("update public.Vendor set vendor_name=?,vendor_number=?, vendor_address=?,vendor_email=? where vendor_id=?");
+        PreparedStatement ps = con.prepareStatement("update public.\"Vendor\" set vendor_name=?,vendor_number=?, vendor_address=?,vendor_email=? where vendor_id=?");
 
         ps.setString(1, v.getVendor_name());
         ps.setString(2, v.getVendor_number());
@@ -183,7 +183,7 @@ public class Crud {
 
     public void deleteVendor(int id) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("delete from public.Vendor where vendor_id=?");
+        PreparedStatement ps = con.prepareStatement("delete from public.\"Vendor\" where vendor_id=?");
         ps.setInt(1, id);
         ps.executeUpdate();
 
@@ -194,7 +194,7 @@ public class Crud {
     public void viewVendor() throws Exception {
         Connection con = DBConnection.getPostgresConnection();
         Statement st = con.createStatement();
-        ResultSet rs = st.executeQuery("select * from public.Vendor");
+        ResultSet rs = st.executeQuery("select * from public.\"Vendor\"");
         while (rs.next()) {
 
             System.out.println("Vendor ID: " + rs.getInt(1));
@@ -209,7 +209,7 @@ public class Crud {
 
     public void searchVendor(int id) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
-        PreparedStatement ps = con.prepareStatement("select * from public.Vendor where vendor_id=?");
+        PreparedStatement ps = con.prepareStatement("select * from public.\"Vendor\" where vendor_id=?");
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
         while (rs.next()) {
@@ -230,57 +230,80 @@ public class Crud {
         Connection con = DBConnection.getPostgresConnection();
         java.util.Scanner sc = new java.util.Scanner(System.in);
 
-        PreparedStatement ps = con.prepareStatement("insert into public.Bill_details (bill_id, cust_id, bill_date, tax, discount, total_amount, final_bill) values(?,?,?,?,?,?,?)");
+        PreparedStatement ps = con.prepareStatement("insert into public.\"Bill_details\" (bill_id, cust_id, bill_date, tax, discount, total_amount, final_bill) values(?,?,?,?,?,?,?)");
         ps.setInt(1, bd.getBill_id());
         ps.setInt(2, bd.getCust_id());
-        ps.setString(3, bd.getBill_date());
+        ps.setDate(3, java.sql.Date.valueOf(bd.getBill_date()));
         ps.setInt(4, bd.getTax());
         ps.setInt(5, bd.getDiscount());
-
-        int totalAmount = bd.getFinal_bill() - bd.getDiscount() + bd.getTax();
-        ps.setInt(6, totalAmount);
-        ps.setInt(7, bd.getFinal_bill());
-
+        ps.setInt(6, 0);
+        ps.setInt(7, 0);
         ps.executeUpdate();
-        System.out.println("Bill Details Inserted.");
+        System.out.println("Bill Details Initialized.");
 
-        PreparedStatement ps2 = con.prepareStatement("insert into public.Bill_items (bill_item_id, bill_id, pro_id, qty, purchase_price, sales_price, subtotal) values(?,?,?,?,?,?,?)");
+        System.out.println("\n--- Available Products for Sale ---");
+        Statement st = con.createStatement();
+        ResultSet rsProd = st.executeQuery("SELECT * FROM public.\"Product\"");
+        while (rsProd.next()) {
+            System.out.println("ID: " + rsProd.getInt(1) + " | Name: " + rsProd.getString(2) + " | Sales Price: " + rsProd.getInt(4));
+        }
+        System.out.println("-----------------------------------");
+
+        PreparedStatement ps2 = con.prepareStatement("insert into public.\"Bill_items\" (bill_id, pro_id, qty, purchase_price, sales_price, subtotal) values(?,?,?,?,?,?)");
+        PreparedStatement fetchProd = con.prepareStatement("SELECT * FROM public.\"Product\" WHERE pro_id = ?");
+        int runningTotal = 0;
         String choice;
 
         do {
             Bill_items bi = new Bill_items();
             bi.setBill_id(bd.getBill_id());
-            System.out.print("Enter Bill Item ID: ");
-            bi.setBill_item_id(sc.nextInt());
-            System.out.print("Enter Product ID: ");
-            bi.setPro_id(sc.nextInt());
+            System.out.print("Enter Product ID from the list above: ");
+            int pId = sc.nextInt();
+            bi.setPro_id(pId);
+
+            fetchProd.setInt(1, pId);
+            ResultSet rs = fetchProd.executeQuery();
+
+            if (rs.next()) {
+                bi.setPurchase_price(rs.getInt(3));
+                bi.setSales_price(rs.getInt(4));
+                System.out.println("--> Selected: " + rs.getString(2) + " | Price: " + bi.getSales_price());
+            } else {
+                System.out.println("Invalid Product ID! Please try again.");
+            }
+
             System.out.print("Enter Quantity: ");
             bi.setQty(sc.nextInt());
-            System.out.print("Enter Purchase Price: ");
-            bi.setPurchase_price(sc.nextInt());
-            System.out.print("Enter Sales Price: ");
-            bi.setSales_price(sc.nextInt());
 
             int subtotal = bi.getQty() * bi.getSales_price();
             bi.setSubtotal(subtotal);
-            ps2.setInt(1, bi.getBill_item_id());
-            ps2.setInt(2, bi.getBill_id());
-            ps2.setInt(3, bi.getPro_id());
-            ps2.setInt(4, bi.getQty());
-            ps2.setInt(5, bi.getPurchase_price());
-            ps2.setInt(6, bi.getSales_price());
-            ps2.setInt(7, bi.getSubtotal());
 
+            runningTotal += subtotal;
+
+            ps2.setInt(1, bi.getBill_id());
+            ps2.setInt(2, bi.getPro_id());
+            ps2.setInt(3, bi.getQty());
+            ps2.setInt(4, bi.getPurchase_price());
+            ps2.setInt(5, bi.getSales_price());
+            ps2.setInt(6, bi.getSubtotal());
             ps2.executeUpdate();
-            System.out.println("Product Added to Bill. Subtotal: " + subtotal);
 
-            System.out.print("Do you want to add another product to this bill? (y/n): ");
+            decreaseStock(bi.getPro_id(), bi.getQty());
+            System.out.println("Product Added. Item Subtotal: " + subtotal);
+            System.out.print("Add another product? (y/n): ");
             choice = sc.next();
 
         } while (choice.equalsIgnoreCase("y"));
 
+        int finalGrandTotal = runningTotal + bd.getTax() - bd.getDiscount();
+        PreparedStatement psUpdate = con.prepareStatement("UPDATE public.\"Bill_details\" SET final_bill = ?, total_amount = ? WHERE bill_id = ?");
+        psUpdate.setInt(1, runningTotal);
+        psUpdate.setInt(2, finalGrandTotal);
+        psUpdate.setInt(3, bd.getBill_id());
+        psUpdate.executeUpdate();
+
         con.close();
-        System.out.println("Complete Bill and all Items Saved Successfully.");
+        System.out.println("\nComplete Sale Saved! Grand Total: " + finalGrandTotal);
     }
 
 
@@ -348,7 +371,6 @@ public class Crud {
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            // Fixed column names to match the query exactly
             System.out.println("Bill ID: " + rs.getInt("bill_id"));
             System.out.println("Product ID: " + rs.getInt("pro_id"));
             System.out.println("Product Name: " + rs.getString("pro_name"));
@@ -371,54 +393,80 @@ public class Crud {
         Connection con = DBConnection.getPostgresConnection();
         java.util.Scanner sc = new java.util.Scanner(System.in);
 
-        PreparedStatement ps = con.prepareStatement("insert into public.\"Bill_details\" (bill_id, vendor_id, bill_date, tax, discount, total_amount, final_bill) values(?,?,?,?,?,?,?)");        ps.setInt(1, bd.getBill_id());
+        PreparedStatement ps = con.prepareStatement("insert into public.\"Bill_details\" (bill_id, vendor_id, bill_date, tax, discount, total_amount, final_bill) values(?,?,?,?,?,?,?)");
+        ps.setInt(1, bd.getBill_id());
         ps.setInt(2, bd.getVendor_id());
-        ps.setString(3, bd.getBill_date());
+        ps.setDate(3, java.sql.Date.valueOf(bd.getBill_date()));
         ps.setInt(4, bd.getTax());
         ps.setInt(5, bd.getDiscount());
-
-        int totalAmount = bd.getFinal_bill() - bd.getDiscount() + bd.getTax();
-        ps.setInt(6, totalAmount);
-        ps.setInt(7, bd.getFinal_bill());
-
+        ps.setInt(6, 0);
+        ps.setInt(7, 0);
         ps.executeUpdate();
-        System.out.println("Bill Details Inserted.");
+        System.out.println("Bill Details Initialized.");
 
-        PreparedStatement ps2 = con.prepareStatement("insert into public.Bill_items (bill_item_id, bill_id, pro_id, qty, purchase_price, subtotal) values(?,?,?,?,?,?)");
+        System.out.println("\n--- Available Products for Purchase ---");
+        Statement st = con.createStatement();
+        ResultSet rsProd = st.executeQuery("SELECT * FROM public.\"Product\"");
+        while (rsProd.next()) {
+            System.out.println("ID: " + rsProd.getInt(1) + " | Name: " + rsProd.getString(2) + " | Purchase Price: " + rsProd.getInt(3));
+        }
+        System.out.println("---------------------------------------");
+
+        PreparedStatement ps2 = con.prepareStatement("insert into public.\"Bill_items\" (bill_id, pro_id, qty, purchase_price, subtotal) values(?,?,?,?,?)");
+        PreparedStatement fetchProd = con.prepareStatement("SELECT * FROM public.\"Product\" WHERE pro_id = ?");
+        int runningTotal = 0;
         String choice;
 
         do {
             Bill_items bi = new Bill_items();
             bi.setBill_id(bd.getBill_id());
-            System.out.print("Enter Bill Item ID: ");
-            bi.setBill_item_id(sc.nextInt());
-            System.out.print("Enter Product ID: ");
-            bi.setPro_id(sc.nextInt());
+
+            System.out.print("Enter Product ID from the list above: ");
+            int pId = sc.nextInt();
+            bi.setPro_id(pId);
+
+            fetchProd.setInt(1, pId);
+            ResultSet rs = fetchProd.executeQuery();
+
+            if (rs.next()) {
+                bi.setPurchase_price(rs.getInt(3));
+                System.out.println(" Selected: " + rs.getString(2) + " | Purchase Price: " + bi.getPurchase_price());
+            } else {
+                System.out.println("Invalid Product ID! Please try again.");
+            }
+
             System.out.print("Enter Quantity: ");
             bi.setQty(sc.nextInt());
-            System.out.print("Enter Purchase Price: ");
-            bi.setPurchase_price(sc.nextInt());
-
 
             int subtotal = bi.getQty() * bi.getPurchase_price();
             bi.setSubtotal(subtotal);
-            ps2.setInt(1, bi.getBill_item_id());
-            ps2.setInt(2, bi.getBill_id());
-            ps2.setInt(3, bi.getPro_id());
-            ps2.setInt(4, bi.getQty());
-            ps2.setInt(5, bi.getPurchase_price());
-            ps2.setInt(6, bi.getSubtotal());
 
+            runningTotal += subtotal;
+
+            ps2.setInt(1, bi.getBill_id());
+            ps2.setInt(2, bi.getPro_id());
+            ps2.setInt(3, bi.getQty());
+            ps2.setInt(4, bi.getPurchase_price());
+            ps2.setInt(5, bi.getSubtotal());
             ps2.executeUpdate();
-            System.out.println("Product Added to Bill. Subtotal: " + subtotal);
 
-            System.out.print("Do you want to add another product to this bill? (y/n): ");
+
+            increaseStock(bi.getPro_id(), bi.getQty());
+            System.out.println("Product Added. Item Subtotal: " + subtotal);
+            System.out.print("Add another product? (y/n): ");
             choice = sc.next();
 
         } while (choice.equalsIgnoreCase("y"));
 
+        int finalGrandTotal = runningTotal + bd.getTax() - bd.getDiscount();
+        PreparedStatement psUpdate = con.prepareStatement("UPDATE public.\"Bill_details\" SET final_bill = ?, total_amount = ? WHERE bill_id = ?");
+        psUpdate.setInt(1, runningTotal);
+        psUpdate.setInt(2, finalGrandTotal);
+        psUpdate.setInt(3, bd.getBill_id());
+        psUpdate.executeUpdate();
+
         con.close();
-        System.out.println("Complete Bill and all Items Saved Successfully.");
+        System.out.println("\nComplete Purchase Saved! Grand Total: " + finalGrandTotal);
     }
 
 
@@ -439,7 +487,7 @@ public class Crud {
         int lastOrderId = 0;
 
         while (rs.next()) {
-            int currentOrderId = rs.getInt("bill_id"); // Lowercase to match SQL
+            int currentOrderId = rs.getInt("bill_id");
 
             if (currentOrderId != lastOrderId) {
                 System.out.println("\nBill ID: " + currentOrderId);
@@ -491,6 +539,25 @@ public class Crud {
             System.out.println("Final Bill: " + rs.getInt("final_bill"));
             System.out.println("---------------------------");
         }
+        con.close();
+    }
+
+    // ================= STOCK MANAGEMENT =================
+    public void increaseStock(int proId, int qty) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("UPDATE public.\"Product\" SET pro_qty = pro_qty + ? WHERE pro_id = ?");
+        ps.setInt(1, qty);
+        ps.setInt(2, proId);
+        ps.executeUpdate();
+        con.close();
+    }
+
+    public void decreaseStock(int proId, int qty) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("UPDATE public.\"Product\" SET pro_qty = pro_qty - ? WHERE pro_id = ?");
+        ps.setInt(1, qty);
+        ps.setInt(2, proId);
+        ps.executeUpdate();
         con.close();
     }
 }

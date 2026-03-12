@@ -1,11 +1,19 @@
 public class Bill_items {
-    int bill_item_id;
     int bill_id;
     int pro_id;
+    int pro_name;
     int qty;
     int purchase_price;
     int sales_price;
     int subtotal;
+
+    public int getPro_name() {
+        return pro_name;
+    }
+
+    public void setPro_name(int pro_name) {
+        this.pro_name = pro_name;
+    }
 
     public int getSales_price() {
         return sales_price;
@@ -15,13 +23,7 @@ public class Bill_items {
         this.sales_price = sales_price;
     }
 
-    public int getBill_item_id() {
-        return bill_item_id;
-    }
 
-    public void setBill_item_id(int bill_item_id) {
-        this.bill_item_id = bill_item_id;
-    }
 
     public int getBill_id() {
         return bill_id;
