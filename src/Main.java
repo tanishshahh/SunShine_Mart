@@ -294,10 +294,14 @@ public class Main {
                                 System.out.print("Enter Bill Date (YYYY-MM-DD): ");
                                 salesBd.setBill_date(sc.nextLine());
 
-                                System.out.print("Enter Tax Amount: ");
-                                salesBd.setTax(sc.nextInt());
-                                System.out.print("Enter Discount Amount: ");
+                                System.out.print("Enter Discount Percentage (%): ");
                                 salesBd.setDiscount(sc.nextInt());
+
+                                salesBd.setTax(18);
+                                salesBd.setFinal_bill(0);
+
+                                crud.cust_insertBill(salesBd);
+
                                 salesBd.setFinal_bill(0);
 
                                 crud.cust_insertBill(salesBd);
@@ -350,10 +354,10 @@ public class Main {
                                 System.out.print("Enter Bill Date (YYYY-MM-DD): ");
                                 purchBd.setBill_date(sc.nextLine());
 
-                                System.out.print("Enter Tax Amount: ");
-                                purchBd.setTax(sc.nextInt());
-                                System.out.print("Enter Discount Amount: ");
+                                System.out.print("Enter Discount Percentage (%): ");
                                 purchBd.setDiscount(sc.nextInt());
+
+                                purchBd.setTax(18);
                                 purchBd.setFinal_bill(0);
 
                                 crud.vendor_insertBill(purchBd);

@@ -234,12 +234,12 @@ public class Crud {
         ps.setInt(1, bd.getBill_id());
         ps.setInt(2, bd.getCust_id());
         ps.setDate(3, java.sql.Date.valueOf(bd.getBill_date()));
-        ps.setInt(4, bd.getTax());
-        ps.setInt(5, bd.getDiscount());
+        ps.setInt(4, 0); // Temporary 0
+        ps.setInt(5, 0); // Temporary 0
         ps.setInt(6, 0);
         ps.setInt(7, 0);
         ps.executeUpdate();
-        System.out.println("Bill Details Initialized.");
+
 
         System.out.println("\n--- Available Products for Sale ---");
         Statement st = con.createStatement();
@@ -295,15 +295,9 @@ public class Crud {
 
         } while (choice.equalsIgnoreCase("y"));
 
-        int finalGrandTotal = runningTotal + bd.getTax() - bd.getDiscount();
-        PreparedStatement psUpdate = con.prepareStatement("UPDATE public.\"Bill_details\" SET final_bill = ?, total_amount = ? WHERE bill_id = ?");
-        psUpdate.setInt(1, runningTotal);
-        psUpdate.setInt(2, finalGrandTotal);
-        psUpdate.setInt(3, bd.getBill_id());
-        psUpdate.executeUpdate();
-
+        double finalGrandTotal=updateFinalBillAmount(bd,runningTotal);
         con.close();
-        System.out.println("\nComplete Sale Saved! Grand Total: " + finalGrandTotal);
+        System.out.println("\nComplete Purchase Saved! Grand Total: " + finalGrandTotal);
     }
 
 
@@ -397,12 +391,11 @@ public class Crud {
         ps.setInt(1, bd.getBill_id());
         ps.setInt(2, bd.getVendor_id());
         ps.setDate(3, java.sql.Date.valueOf(bd.getBill_date()));
-        ps.setInt(4, bd.getTax());
-        ps.setInt(5, bd.getDiscount());
+        ps.setInt(4, 0);
+        ps.setInt(5, 0);
         ps.setInt(6, 0);
         ps.setInt(7, 0);
         ps.executeUpdate();
-        System.out.println("Bill Details Initialized.");
 
         System.out.println("\n--- Available Products for Purchase ---");
         Statement st = con.createStatement();
@@ -458,13 +451,7 @@ public class Crud {
 
         } while (choice.equalsIgnoreCase("y"));
 
-        int finalGrandTotal = runningTotal + bd.getTax() - bd.getDiscount();
-        PreparedStatement psUpdate = con.prepareStatement("UPDATE public.\"Bill_details\" SET final_bill = ?, total_amount = ? WHERE bill_id = ?");
-        psUpdate.setInt(1, runningTotal);
-        psUpdate.setInt(2, finalGrandTotal);
-        psUpdate.setInt(3, bd.getBill_id());
-        psUpdate.executeUpdate();
-
+        double finalGrandTotal=updateFinalBillAmount(bd,runningTotal);
         con.close();
         System.out.println("\nComplete Purchase Saved! Grand Total: " + finalGrandTotal);
     }
@@ -559,6 +546,28 @@ public class Crud {
         ps.setInt(2, proId);
         ps.executeUpdate();
         con.close();
+    }
+
+
+    public int updateFinalBillAmount(Bill_details bd, int runningTotal) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+
+        int taxAmount = (runningTotal * bd.getTax()) / 100;
+        int discountAmount = (runningTotal * bd.getDiscount()) / 100;
+        int finalGrandTotal = runningTotal + taxAmount - discountAmount;
+
+        PreparedStatement psUpdate = con.prepareStatement("UPDATE public.\"Bill_details\" SET tax = ?, discount = ?, total_amount = ?, final_bill = ? WHERE bill_id = ?");
+        psUpdate.setInt(1, taxAmount);
+        psUpdate.setInt(2, discountAmount);
+        psUpdate.setInt(3, runningTotal);
+        psUpdate.setInt(4, finalGrandTotal);
+        psUpdate.setInt(5, bd.getBill_id());
+        psUpdate.executeUpdate();
+
+        con.close();
+
+        // Return the final total so the calling function can print it!
+        return finalGrandTotal;
     }
 }
 
