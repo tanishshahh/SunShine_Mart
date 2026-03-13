@@ -565,9 +565,132 @@ public class Crud {
         psUpdate.executeUpdate();
 
         con.close();
-
-        // Return the final total so the calling function can print it!
         return finalGrandTotal;
+    }
+
+    //=========================Reports==========================
+    /*
+    1) low stock
+    2) profit in that sale
+    3)daily sales
+    4) sales according to date
+     */
+
+    // ================= REPORTS =================
+
+    // 1. Low Stock Report
+    public void lowStock() throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        Statement st = con.createStatement();
+        System.out.println("\n--- LOW STOCK ALERT REPORT ---");
+        ResultSet rs = st.executeQuery("SELECT pro_id, pro_name, pro_qty FROM public.\"Product\" WHERE pro_qty < 10 ORDER BY pro_qty ASC");
+
+        boolean hasLowStock = false;
+        while (rs.next()) {
+            hasLowStock = true;
+            System.out.println("Product ID: " + rs.getInt("pro_id") +
+                    " | Name: " + rs.getString("pro_name") +
+                    " | Current Qty: " + rs.getInt("pro_qty") + "  <-- REORDER NEEDED");
+        }
+        if (!hasLowStock) {
+            System.out.println("All product stocks are 10 or more!");
+        }
+        System.out.println("------------------------------");
+        con.close();
+    }
+
+    public void profitForDate(String dateString) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(
+                "SELECT bd.bill_id, SUM((bi.sales_price - bi.purchase_price) * bi.qty) AS bill_profit " +
+                        "FROM public.\"Bill_details\" bd " +
+                        "JOIN public.\"Bill_items\" bi ON bd.bill_id = bi.bill_id " +
+                        "WHERE bd.bill_date = ? AND bd.cust_id IS NOT NULL " +
+                        "GROUP BY bd.bill_id " +
+                        "ORDER BY bd.bill_id ASC"
+        );
+
+        ps.setDate(1, java.sql.Date.valueOf(dateString));
+        ResultSet rs = ps.executeQuery();
+
+        System.out.println("\n--- PROFIT REPORT FOR DATE: " + dateString + " ---");
+        int totalDailyProfit = 0;
+        boolean hasSales = false;
+
+        while(rs.next()) {
+            hasSales = true;
+            int billProfit = rs.getInt("bill_profit");
+            totalDailyProfit += billProfit; // Keep a running total for the whole day
+
+            System.out.println("Bill ID: " + rs.getInt("bill_id") +
+                    " | Profit for this Bill: Rs." + billProfit);
+        }
+
+        if (!hasSales) {
+            System.out.println("No sales/profit found for this date.");
+        }
+
+        System.out.println("=========================================");
+        System.out.println("TOTAL PROFIT FOR THE DAY: Rs." + totalDailyProfit);
+        System.out.println("=========================================");
+        con.close();
+    }
+
+    public void dailySalesSummary(String dateString) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(
+                "SELECT COUNT(bill_id) as total_bills, SUM(tax) as total_tax, SUM(discount) as total_discount, SUM(final_bill) as total_revenue " +
+                        "FROM public.\"Bill_details\" " +
+                        "WHERE cust_id IS NOT NULL AND bill_date = ?"
+        );
+
+        ps.setDate(1, java.sql.Date.valueOf(dateString));
+        ResultSet rs = ps.executeQuery();
+
+        System.out.println("\n--- SALES SUMMARY FOR: " + dateString + " ---");
+        if(rs.next() && rs.getInt("total_bills") > 0) {
+            System.out.println("Total Bills Generated: " + rs.getInt("total_bills"));
+            System.out.println("Total Tax Collected:   " + rs.getInt("total_tax"));
+            System.out.println("Total Discounts Given: " + rs.getInt("total_discount"));
+            System.out.println("TOTAL REVENUE:         Rs." + rs.getInt("total_revenue"));
+        } else {
+            System.out.println("No sales found for this date.");
+        }
+        System.out.println("----------------------------------------");
+        con.close();
+    }
+
+    public void salesByDateRange(String startDate, String endDate) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(
+                "SELECT bd.bill_id, c.cust_name, bd.bill_date, bd.total_amount, bd.tax, bd.discount, bd.final_bill " +
+                        "FROM public.\"Bill_details\" bd " +
+                        "JOIN public.\"Customer\" c ON bd.cust_id = c.cust_id " +
+                        "WHERE bd.bill_date BETWEEN ? AND ? " +
+                        "ORDER BY bd.bill_date ASC"
+        );
+
+        ps.setDate(1, java.sql.Date.valueOf(startDate));
+        ps.setDate(2, java.sql.Date.valueOf(endDate));
+
+        ResultSet rs = ps.executeQuery();
+
+        System.out.println("\n--- DETAILED SALES FROM " + startDate + " TO " + endDate + " ---");
+        boolean hasRecords = false;
+
+        while(rs.next()) {
+            hasRecords = true;
+            System.out.println("Date: " + rs.getDate("bill_date") +
+                    " | Bill ID: " + rs.getInt("bill_id") +
+                    " | Customer: " + rs.getString("cust_name") +
+                    " | Final Bill: " + rs.getInt("final_bill"));
+        }
+
+        if (!hasRecords) {
+            System.out.println("No sales found during this time period.");
+        }
+        System.out.println("---------------------------------------------------------");
+        con.close();
     }
 }
 

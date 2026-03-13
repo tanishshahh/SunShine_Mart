@@ -16,7 +16,8 @@ public class Main {
             System.out.println("3. VENDOR MENU");
             System.out.println("4. SALES");
             System.out.println("5. PURCHASE");
-            System.out.println("6. EXIT");
+            System.out.println("6. REPORTS");
+            System.out.println("7. EXIT");
             System.out.println("==============================");
 
             System.out.print("Select Category: ");
@@ -380,13 +381,62 @@ public class Main {
                     } while (purchaseChoice != 4);
                     break;
                 case 6:
+                    int reportChoice;
+                    do {
+                        System.out.println("\n==============================");
+                        System.out.println("\t REPORTS MENU ");
+                        System.out.println("==============================");
+                        System.out.println("1. Low Stock  Report");
+                        System.out.println("2. Profit for a Specific Sale");
+                        System.out.println("3. Daily Sales Summary");
+                        System.out.println("4. Sales by Date Range (Start & End)");
+                        System.out.println("5. Back to Main Menu");
+                        System.out.println("==============================");
+                        System.out.print("Enter your choice: ");
+                        reportChoice = sc.nextInt();
+
+                        switch (reportChoice) {
+                            case 1:
+                                crud.lowStock();
+                                break;
+
+                            case 2:
+                                System.out.print("Enter the Date (YYYY-MM-DD) to calculate profit: ");
+                                String profitDate = sc.next();
+                                crud.profitForDate(profitDate);
+                                break;
+
+                            case 3:
+                                System.out.print("Enter Date (YYYY-MM-DD) for Sales Summary: ");
+                                String summaryDate = sc.next();
+                                crud.dailySalesSummary(summaryDate);
+                                break;
+
+                            case 4:
+                                System.out.print("Enter Start Date (YYYY-MM-DD): ");
+                                String startDate = sc.next();
+                                System.out.print("Enter End Date (YYYY-MM-DD): ");
+                                String endDate = sc.next();
+                                crud.salesByDateRange(startDate, endDate);
+                                break;
+
+                            case 5:
+                                System.out.println("Returning to Main Menu...");
+                                break;
+
+                            default:
+                                System.out.println("Invalid Choice! Please enter a number between 1 and 5.");
+                        }
+                    } while (reportChoice != 5);
+                    break;
+                case 7:
                     System.out.println("Exiting Mart Management System. Goodbye!");
                     break;
                 default:
                     System.out.println("Invalid Input! Please select a valid option.");
                     break;
             }
-        } while (mainChoice != 6);
+        } while (mainChoice !=7);
 
         sc.close();
     }
