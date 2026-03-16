@@ -6,9 +6,48 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         Crud crud = new Crud();
         int mainChoice;
+        boolean isLoggedIn = false;
+
+        System.out.println("==========================================");
+        System.out.println("   WELCOME TO MART MANAGEMENT SYSTEM");
+        System.out.println("==========================================");
+
+        System.out.print("Do you want to add a new employee before logging in? (y/n): ");
+        String addEmp = sc.next();
+
+        if (addEmp.equalsIgnoreCase("y")) {
+            employee newEmp = new employee();
+            sc.nextLine();
+
+            System.out.print("Enter Name: ");
+            newEmp.setEmp_name(sc.nextLine());
+            System.out.print("Enter Phone Number: ");
+            newEmp.setEmp_number(sc.nextLine());
+            System.out.print("Enter Email: ");
+            newEmp.setEmp_email(sc.nextLine());
+            System.out.print("Enter Password: ");
+            newEmp.setEmp_pass(sc.nextLine());
+            System.out.print("Enter Address: ");
+            newEmp.setEmp_address(sc.nextLine());
+            System.out.print("Enter Role (e.g., Admin, Cashier, Manager): ");
+            newEmp.setEmp_role(sc.nextLine());
+
+            crud.insertEmployee(newEmp);
+            System.out.println("\nPlease log in with your new account!");
+        }
+
+        while (!isLoggedIn) {
+            System.out.println("\n--- PLEASE LOG IN ---");
+            System.out.print("Email: ");
+            String email = sc.next();
+            System.out.print("Password: ");
+            String pass = sc.next();
+
+            isLoggedIn = crud.employeeLogin(email, pass);
+        }
 
         do {
-            System.out.println("==============================");
+            System.out.println("\n==============================");
             System.out.println("\t MART MANAGEMENT SYSTEM ");
             System.out.println("==============================");
             System.out.println("1. PRODUCT MENU");
@@ -17,14 +56,14 @@ public class Main {
             System.out.println("4. SALES");
             System.out.println("5. PURCHASE");
             System.out.println("6. REPORTS");
-            System.out.println("7. EXIT");
+            System.out.println("7. EMPLOYEE MENU");
+            System.out.println("8. EXIT");
             System.out.println("==============================");
 
             System.out.print("Select Category: ");
             mainChoice = sc.nextInt();
 
             switch (mainChoice) {
-                // ================= PRODUCT MENU =================
                 case 1:
                     int productChoice;
                     do {
@@ -108,7 +147,6 @@ public class Main {
                     } while (productChoice != 6);
                     break;
 
-                // ================= CUSTOMER MENU =================
                 case 2:
                     int customerChoice;
                     do {
@@ -188,7 +226,6 @@ public class Main {
                     } while (customerChoice != 6);
                     break;
 
-                // ================= VENDOR MENU =================
                 case 3:
                     int vendorChoice;
                     do {
@@ -268,7 +305,6 @@ public class Main {
                     } while (vendorChoice != 6);
                     break;
 
-                // ================= SALES (CUSTOMER) MENU =================
                 case 4:
                     int salesChoice;
                     do {
@@ -287,11 +323,20 @@ public class Main {
                         switch (salesChoice) {
                             case 1:
                                 Bill_details salesBd = new Bill_details();
+                                employee e=new employee();
+
+                                crud.displayEmployeesForBilling();
+
+                                System.out.print("Enter Employee ID handling this sale: ");
+                                e.setEmp_id(sc.nextInt());
+
                                 System.out.print("Enter Bill ID: ");
                                 salesBd.setBill_id(sc.nextInt());
+
                                 System.out.print("Enter Customer ID: ");
                                 salesBd.setCust_id(sc.nextInt());
                                 sc.nextLine();
+
                                 System.out.print("Enter Bill Date (YYYY-MM-DD): ");
                                 salesBd.setBill_date(sc.nextLine());
 
@@ -301,9 +346,8 @@ public class Main {
                                 salesBd.setTax(18);
                                 salesBd.setFinal_bill(0);
 
-                                crud.cust_insertBill(salesBd);
+                                crud.cust_insertBill(salesBd,e);
 
-                                salesBd.setFinal_bill(0);
                                 break;
                             case 2:
                                 System.out.println("\n--- All Customer Sales ---");
@@ -327,7 +371,6 @@ public class Main {
                     } while (salesChoice != 5);
                     break;
 
-                // ================= PURCHASE (VENDOR) MENU =================
                 case 5:
                     int purchaseChoice;
                     do {
@@ -345,6 +388,12 @@ public class Main {
                         switch (purchaseChoice) {
                             case 1:
                                 Bill_details purchBd = new Bill_details();
+                                employee e=new employee();
+                                crud.displayEmployeesForBilling();
+
+                                System.out.print("Enter Employee ID handling this sale: ");
+                                e.setEmp_id(sc.nextInt());
+
                                 System.out.print("Enter Bill ID: ");
                                 purchBd.setBill_id(sc.nextInt());
                                 System.out.print("Enter Vendor ID: ");
@@ -359,7 +408,7 @@ public class Main {
                                 purchBd.setTax(18);
                                 purchBd.setFinal_bill(0);
 
-                                crud.vendor_insertBill(purchBd);
+                                crud.vendor_insertBill(purchBd,e);
                                 break;
                             case 2:
                                 System.out.println("\n--- All Vendor Purchases ---");
@@ -378,6 +427,7 @@ public class Main {
                         }
                     } while (purchaseChoice != 4);
                     break;
+
                 case 6:
                     int reportChoice;
                     do {
@@ -443,24 +493,103 @@ public class Main {
                                 crud.report_highest_profit_product(startdate1,enddate1);
                                 break;
 
-
                             case 8:
                                 System.out.println("Returning to Main Menu...");
                                 break;
 
                             default:
-                                System.out.println("Invalid Choice! Please enter a number between 1 and 5.");
+                                System.out.println("Invalid Choice! Please enter a number between 1 and 8.");
                         }
-                    } while (reportChoice != 5);
+                    } while (reportChoice != 8); // Fixed from 5 to 8!
                     break;
+
                 case 7:
+                    int empChoice;
+                    do {
+                        System.out.println("\n=======================");
+                        System.out.println("\t EMPLOYEE MENU ");
+                        System.out.println("=======================");
+                        System.out.println("1. Add New Employee");
+                        System.out.println("2. Update Employee");
+                        System.out.println("3. Delete Employee");
+                        System.out.println("4. Search Employee");
+                        System.out.println("5. View All Employees");
+                        System.out.println("6. Back to Main Menu");
+                        System.out.println("=======================");
+                        System.out.print("Enter your choice: ");
+                        empChoice = sc.nextInt();
+
+                        switch (empChoice) {
+                            case 1:
+                                employee newEmp = new employee();
+                                sc.nextLine(); // consume newline
+                                System.out.print("Enter Name: ");
+                                newEmp.setEmp_name(sc.nextLine());
+                                System.out.print("Enter Phone Number: ");
+                                newEmp.setEmp_number(sc.nextLine());
+                                System.out.print("Enter Email: ");
+                                newEmp.setEmp_email(sc.nextLine());
+                                System.out.print("Enter Password: ");
+                                newEmp.setEmp_pass(sc.nextLine());
+                                System.out.print("Enter Address: ");
+                                newEmp.setEmp_address(sc.nextLine());
+                                System.out.print("Enter Role: ");
+                                newEmp.setEmp_role(sc.nextLine());
+
+                                crud.insertEmployee(newEmp);
+                                break;
+                            case 2:
+                                employee updateEmp = new employee();
+                                System.out.print("Enter Employee ID to Update: ");
+                                updateEmp.setEmp_id(sc.nextInt());
+                                sc.nextLine(); // consume newline
+
+                                System.out.print("Enter New Name: ");
+                                updateEmp.setEmp_name(sc.nextLine());
+                                System.out.print("Enter New Phone Number: ");
+                                updateEmp.setEmp_number(sc.nextLine());
+                                System.out.print("Enter New Email: ");
+                                updateEmp.setEmp_email(sc.nextLine());
+                                System.out.print("Enter New Password: ");
+                                updateEmp.setEmp_pass(sc.nextLine());
+                                System.out.print("Enter New Address: ");
+                                updateEmp.setEmp_address(sc.nextLine());
+                                System.out.print("Enter New Role: ");
+                                updateEmp.setEmp_role(sc.nextLine());
+
+                                crud.updateEmployee(updateEmp);
+                                break;
+                            case 3:
+                                System.out.print("Enter Employee ID to Delete: ");
+                                int delId = sc.nextInt();
+                                crud.deleteEmployee(delId);
+                                break;
+                            case 4:
+                                System.out.print("Enter Employee ID to Search: ");
+                                int searchId = sc.nextInt();
+                                crud.searchEmployee(searchId);
+                                break;
+                            case 5:
+                                crud.viewAllEmployees();
+                                break;
+                            case 6:
+                                System.out.println("Returning to Main Menu...");
+                                break;
+                            default:
+                                System.out.println("Invalid Choice!");
+                        }
+                    } while (empChoice != 6);
+                    break;
+
+                case 8:
                     System.out.println("Exiting Mart Management System. Goodbye!");
                     break;
+
                 default:
                     System.out.println("Invalid Input! Please select a valid option.");
                     break;
             }
-        } while (mainChoice !=7);
+        } while (mainChoice != 8);
 
         sc.close();
     }

@@ -226,18 +226,23 @@ public class Crud {
     //==========Order=============
 // --------------------------------Customer-------------------------
 
-    public void cust_insertBill(Bill_details bd) throws Exception {
+    public void cust_insertBill(Bill_details bd,employee e) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
         java.util.Scanner sc = new java.util.Scanner(System.in);
 
-        PreparedStatement ps = con.prepareStatement("insert into public.\"Bill_details\" (bill_id, cust_id, bill_date, tax, discount, total_amount, final_bill) values(?,?,?,?,?,?,?)");
+        PreparedStatement ps = con.prepareStatement(
+                "insert into public.\"Bill_details\" (bill_id, cust_id, emp_id, bill_date, tax, discount, total_amount, final_bill) values(?,?,?,?,?,?,?,?)"
+        );
+
         ps.setInt(1, bd.getBill_id());
         ps.setInt(2, bd.getCust_id());
-        ps.setDate(3, java.sql.Date.valueOf(bd.getBill_date()));
-        ps.setInt(4, 0); // Temporary 0
-        ps.setInt(5, 0); // Temporary 0
-        ps.setInt(6, 0);
-        ps.setInt(7, 0);
+        ps.setInt(3, e.getEmp_id()); // <-- NEW: Added Employee ID here!
+        ps.setDate(4, java.sql.Date.valueOf(bd.getBill_date())); // Shifted to 4
+        ps.setInt(5, 0); // Temporary tax
+        ps.setInt(6, 0); // Temporary discount
+        ps.setInt(7, 0); // Temporary total_amount
+        ps.setInt(8, 0); // Temporary final_bill
+
         ps.executeUpdate();
 
 
@@ -383,18 +388,23 @@ public class Crud {
 
  //-----------------------------Vendor------------------------------
 
-    public void vendor_insertBill(Bill_details bd) throws Exception {
+    public void vendor_insertBill(Bill_details bd,employee e) throws Exception {
         Connection con = DBConnection.getPostgresConnection();
         java.util.Scanner sc = new java.util.Scanner(System.in);
 
-        PreparedStatement ps = con.prepareStatement("insert into public.\"Bill_details\" (bill_id, vendor_id, bill_date, tax, discount, total_amount, final_bill) values(?,?,?,?,?,?,?)");
+        PreparedStatement ps = con.prepareStatement(
+                "insert into public.\"Bill_details\" (bill_id, Vendor_id, emp_id, bill_date, tax, discount, total_amount, final_bill) values(?,?,?,?,?,?,?,?)"
+        );
+
         ps.setInt(1, bd.getBill_id());
         ps.setInt(2, bd.getVendor_id());
-        ps.setDate(3, java.sql.Date.valueOf(bd.getBill_date()));
-        ps.setInt(4, 0);
+        ps.setInt(3, e.getEmp_id());
+        ps.setDate(4, java.sql.Date.valueOf(bd.getBill_date()));
         ps.setInt(5, 0);
         ps.setInt(6, 0);
         ps.setInt(7, 0);
+        ps.setInt(8, 0);
+
         ps.executeUpdate();
 
         System.out.println("\n--- Available Products for Purchase ---");
@@ -793,6 +803,140 @@ public class Crud {
             System.out.println("No sales found for this time period.");
         }
         System.out.println("--------------------------------------------------");
+        con.close();
+    }
+
+
+    // ================= EMPLOYEE LOGIN =================
+    public boolean employeeLogin(String email, String password) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(
+                "SELECT emp_name, emp_role FROM public.employee WHERE emp_email = ? AND emp_pass = ?"
+        );
+
+        ps.setString(1, email);
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
+
+        boolean isAuthenticated = false;
+        if (rs.next()) {
+            isAuthenticated = true;
+            String name = rs.getString("emp_name");
+            String role = rs.getString("emp_role");
+            System.out.println("\nLogin Successful! Welcome, " + name+ " (" +role+ ") <<<");
+        } else {
+            System.out.println("\nERROR: Invalid Email or Password. Please try again.");
+        }
+        con.close();
+        return isAuthenticated;
+    }
+
+    public void displayEmployeesForBilling() throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT emp_id, emp_name, emp_email FROM public.employee ORDER BY emp_id ASC");
+
+        System.out.println("\n--- AVAILABLE EMPLOYEES ---");
+        while(rs.next()) {
+            System.out.println("ID: " + rs.getInt("emp_id") +
+                    " | Name: " + rs.getString("emp_name") +
+                    " | Email: " + rs.getString("emp_email"));
+        }
+        System.out.println("---------------------------");
+        con.close();
+    }
+    // ================= EMPLOYEE CRUD OPERATIONS =================
+
+    public void insertEmployee(employee e) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        // Assuming emp_id is SERIAL (auto-incrementing), so we don't insert it manually
+        PreparedStatement ps = con.prepareStatement(
+                "INSERT INTO public.employee (emp_name, emp_number, emp_email, emp_pass, emp_address, emp_role) VALUES (?, ?, ?, ?, ?, ?)"
+        );
+
+        ps.setString(1, e.getEmp_name());
+        ps.setString(2, e.getEmp_number());
+        ps.setString(3, e.getEmp_email());
+        ps.setString(4, e.getEmp_pass());
+        ps.setString(5, e.getEmp_address());
+        ps.setString(6, e.getEmp_role());
+
+        ps.executeUpdate();
+        System.out.println("\nEmployee Inserted Successfully!");
+        con.close();
+    }
+
+    public void updateEmployee(employee e) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(
+                "UPDATE public.employee SET emp_name=?, emp_number=?, emp_email=?, emp_pass=?, emp_address=?, emp_role=? WHERE emp_id=?"
+        );
+
+        ps.setString(1, e.getEmp_name());
+        ps.setString(2, e.getEmp_number());
+        ps.setString(3, e.getEmp_email());
+        ps.setString(4, e.getEmp_pass());
+        ps.setString(5, e.getEmp_address());
+        ps.setString(6, e.getEmp_role());
+        ps.setInt(7, e.getEmp_id());
+
+        int rowsAffected = ps.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("\nEmployee Updated Successfully!");
+        } else {
+            System.out.println("\nEmployee ID not found.");
+        }
+        con.close();
+    }
+
+    public void deleteEmployee(int id) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("DELETE FROM public.employee WHERE emp_id=?");
+        ps.setInt(1, id);
+        int rowsAffected = ps.executeUpdate();
+
+        if (rowsAffected > 0) {
+            System.out.println("\nEmployee Deleted Successfully!");
+        } else {
+            System.out.println("\nEmployee ID not found.");
+        }
+        con.close();
+    }
+
+    public void searchEmployee(int id) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM public.employee WHERE emp_id=?");
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            System.out.println("\n--- EMPLOYEE DETAILS ---");
+            System.out.println("ID: " + rs.getInt("emp_id"));
+            System.out.println("Name: " + rs.getString("emp_name"));
+            System.out.println("Phone: " + rs.getString("emp_number"));
+            System.out.println("Email: " + rs.getString("emp_email"));
+            System.out.println("Address: " + rs.getString("emp_address"));
+            System.out.println("Role: " + rs.getString("emp_role"));
+            System.out.println("------------------------");
+        } else {
+            System.out.println("\nEmployee not found.");
+        }
+        con.close();
+    }
+
+    public void viewAllEmployees() throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        Statement st = con.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM public.employee ORDER BY emp_id ASC");
+
+        System.out.println("\n--- ALL EMPLOYEES ---");
+        while (rs.next()) {
+            System.out.println("ID: " + rs.getInt("emp_id") +
+                    " | Name: " + rs.getString("emp_name") +
+                    " | Role: " + rs.getString("emp_role") +
+                    " | Email: " + rs.getString("emp_email"));
+        }
+        System.out.println("---------------------");
         con.close();
     }
 }
