@@ -304,8 +304,6 @@ public class Main {
                                 crud.cust_insertBill(salesBd);
 
                                 salesBd.setFinal_bill(0);
-
-                                crud.cust_insertBill(salesBd);
                                 break;
                             case 2:
                                 System.out.println("\n--- All Customer Sales ---");
@@ -390,7 +388,10 @@ public class Main {
                         System.out.println("2. Profit for a Specific Sale");
                         System.out.println("3. Daily Sales Summary");
                         System.out.println("4. Sales by Date Range (Start & End)");
-                        System.out.println("5. Back to Main Menu");
+                        System.out.println("5. Sales by Product");
+                        System.out.println("6. Highest Selling Product");
+                        System.out.println("7. Highest Profiting Products");
+                        System.out.println("8. Back to Main Menu");
                         System.out.println("==============================");
                         System.out.print("Enter your choice: ");
                         reportChoice = sc.nextInt();
@@ -419,8 +420,31 @@ public class Main {
                                 String endDate = sc.next();
                                 crud.salesByDateRange(startDate, endDate);
                                 break;
-
                             case 5:
+                                System.out.println("Enter Product Name:");
+                                String productname=sc.next();
+
+                                crud.bills_byProducts(productname);
+                                break;
+                            case 6:
+                                System.out.println("Enter Start Date:");
+                                String startdate=sc.next();
+                                System.out.println("Enter End Date:");
+                                String enddate=sc.next();
+
+                                crud.report_procuct_sold(startdate,enddate);
+                                break;
+                            case 7:
+                                System.out.println("Enter Start Date:");
+                                String startdate1=sc.next();
+                                System.out.println("Enter End Date:");
+                                String enddate1=sc.next();
+
+                                crud.report_highest_profit_product(startdate1,enddate1);
+                                break;
+
+
+                            case 8:
                                 System.out.println("Returning to Main Menu...");
                                 break;
 

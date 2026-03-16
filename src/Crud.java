@@ -692,5 +692,108 @@ public class Crud {
         System.out.println("---------------------------------------------------------");
         con.close();
     }
+    /*
+1) report : enter product name, get all bills where that product is.
+2) report: enter date , get all products sold (group by) in desc, get the final amount of that product sold and also profit earned.
+3) report: enter date , get all products sold (group by), get the final amount of that product sold and also profit earned in desc.
+ */
+    public void bills_byProducts(String productname) throws Exception {
+        Connection con=DBConnection.getPostgresConnection();
+        PreparedStatement ps=con.prepareStatement("select bd.bill_id, bd.bill_date, bi.qty, bi.sales_price, bi.subtotal \n" +
+                "from public.\"Bill_details\" bd \n" +
+                "join public.\"Bill_items\" bi on bd.bill_id = bi.bill_id \n" +
+                "join public.\"Product\" p on bi.pro_id = p.pro_id \n" +
+                "where p.pro_name ilike ? and bd.cust_id is not null \n" +
+                "ORDER BY bd.bill_date, bd.bill_id desc");
+
+        ps.setString(1,productname);
+        ResultSet rs = ps.executeQuery();
+
+        System.out.println("\n--- Bills containing product: "+productname+" ---");
+        boolean hasRecords=false;
+        while(rs.next()){
+            hasRecords =true;
+            System.out.println("Date: "+rs.getDate("bill_date")+
+                    " | Bill ID: "+ rs.getInt("bill_id")+
+                    " | Qty Bought: "+ rs.getInt("qty") +
+                    " | Price: Rs." +rs.getInt("sales_price") +
+                    " | Subtotal: Rs."+ rs.getInt("subtotal"));
+        }
+        if (!hasRecords) {
+            System.out.println("No sales found for this product.");
+        }
+        System.out.println("--------------------------------------------------");
+        con.close();
+    }
+
+    public void report_procuct_sold(String startdate,String enddate) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement("select p.pro_name, sum(bi.qty) as total_qty, \n" +
+                "       sum(bi.subtotal) as total_amount, \n" +
+                "       sum((bi.sales_price - bi.purchase_price)*bi.qty) as total_profit \n" +
+                "from public.\"Bill_items\" bi \n" +
+                "join public.\"Product\" p on bi.pro_id = p.pro_id \n" +
+                "join public.\"Bill_details\" bd on bi.bill_id = bd.bill_id \n" +
+                "where bd.bill_date between ? and ? and bd.cust_id is not null \n" +
+                "group by p.pro_name \n" +
+                "order by total_qty desc;");
+
+        ps.setDate(1, java.sql.Date.valueOf(startdate));
+        ps.setDate(2, java.sql.Date.valueOf(enddate));
+        ResultSet rs = ps.executeQuery();
+
+        System.out.println("\n--- Bills contining highest products sold ---");
+        System.out.println("From: "+startdate+ " to "+enddate);
+        boolean hasRecords=false;
+        while(rs.next()){
+            hasRecords =true;
+            System.out.println("Product name: "+rs.getString("pro_name")+
+                    " | Total qty: "+ rs.getInt("qty")+
+                    " | Total Amount: "+ rs.getInt("subtotal") +
+                    " | Total Profit" +rs.getInt("total_profit"));
+        }
+        if (!hasRecords) {
+            System.out.println("No sales found for this product.");
+        }
+        System.out.println("--------------------------------------------------");
+        con.close();
+    }
+
+    public void report_highest_profit_product(String startdate,String enddate) throws Exception {
+        Connection con = DBConnection.getPostgresConnection();
+        PreparedStatement ps = con.prepareStatement(
+                "select p.pro_name, sum(bi.qty) as total_qty, \n" +
+                        "       sum(bi.subtotal) as total_amount, \n" +
+                        "       sum((bi.sales_price - bi.purchase_price)*bi.qty) as total_profit \n" +
+                        "from public.\"Bill_items\" bi \n" +
+                        "join public.\"Product\" p on bi.pro_id = p.pro_id \n" +
+                        "join public.\"Bill_details\" bd on bi.bill_id = bd.bill_id \n" +
+                        "where bd.bill_date between ? and ? and bd.cust_id is not null \n" +
+                        "group by p.pro_name \n" +
+                        "order by total_profit desc;"
+        );
+
+        ps.setDate(1, java.sql.Date.valueOf(startdate));
+        ps.setDate(2, java.sql.Date.valueOf(enddate));
+        ResultSet rs = ps.executeQuery();
+
+        System.out.println("\n--- Products with highest profits earned ---");
+        System.out.println("From: " + startdate + " to " + enddate);
+        boolean hasRecords = false;
+
+        while(rs.next()){
+            hasRecords = true;
+            System.out.println("Product name: " + rs.getString("pro_name") +
+                    " | Total qty: " + rs.getInt("total_qty") +
+                    " | Total Amount: " + rs.getInt("total_amount") +
+                    " | Total Profit: " + rs.getInt("total_profit"));
+        }
+
+        if (!hasRecords) {
+            System.out.println("No sales found for this time period.");
+        }
+        System.out.println("--------------------------------------------------");
+        con.close();
+    }
 }
 
