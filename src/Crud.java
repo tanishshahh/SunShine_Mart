@@ -851,15 +851,15 @@ public class Crud {
         Connection con = DBConnection.getPostgresConnection();
         // Assuming emp_id is SERIAL (auto-incrementing), so we don't insert it manually
         PreparedStatement ps = con.prepareStatement(
-                "INSERT INTO public.employee (emp_name, emp_number, emp_email, emp_pass, emp_address, emp_role) VALUES (?, ?, ?, ?, ?, ?)"
+                "INSERT INTO public.employee (emp_id,emp_name, emp_number, emp_email, emp_pass, emp_address, emp_role) VALUES (?, ?, ?, ?, ?, ?,?)"
         );
-
-        ps.setString(1, e.getEmp_name());
-        ps.setString(2, e.getEmp_number());
-        ps.setString(3, e.getEmp_email());
-        ps.setString(4, e.getEmp_pass());
-        ps.setString(5, e.getEmp_address());
-        ps.setString(6, e.getEmp_role());
+        ps.setInt(1,e.getEmp_id());
+        ps.setString(2, e.getEmp_name());
+        ps.setString(3, e.getEmp_number());
+        ps.setString(4, e.getEmp_email());
+        ps.setString(5, e.getEmp_pass());
+        ps.setString(6, e.getEmp_address());
+        ps.setString(7, e.getEmp_role());
 
         ps.executeUpdate();
         System.out.println("\nEmployee Inserted Successfully!");

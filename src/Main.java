@@ -18,9 +18,12 @@ public class Main {
         if (addEmp.equalsIgnoreCase("y")) {
             employee newEmp = new employee();
             sc.nextLine();
+            System.out.println("Enter Id:");
+            newEmp.setEmp_id(sc.nextInt());
 
             System.out.print("Enter Name: ");
-            newEmp.setEmp_name(sc.nextLine());
+            newEmp.setEmp_name(sc.next());
+            sc.nextLine();
             System.out.print("Enter Phone Number: ");
             newEmp.setEmp_number(sc.nextLine());
             System.out.print("Enter Email: ");
